@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import users from '../../models/users.js';
 import jwt from 'jsonwebtoken';
+
 import { sendEmail } from '../../service/emailService.js';
 // Make sure the User model is correctly imported
 const register = async (req, res) => {
@@ -161,14 +162,38 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+    
     try {
+        const { email, password } = req.body;
+
+        // Check if user exists
+        const user = await users.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid email or password' });
+        }
+
+        // Compare password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'Invalid email or password' });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { userId: user._id, email: user.email },
+            process.env.JWT_SECRET, // Use a strong secret key from .env
+            { expiresIn: '1h' } // Token expires in 1 hour
+        );
+
         res.status(200).json({
             success: true,
-            message: "Login successful", // Send the token to the client if needed
-        });
+            message: 'Login successful',
+            token, // Send token to client
+            user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role }
+});
     } catch (error) {
         console.error('Error logging in user:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 };
 const verifyEmployer = async (req, res) => {
