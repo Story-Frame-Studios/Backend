@@ -12,6 +12,9 @@ const app = express();
 app.use(express.json()); 
 const port = process.env.PORT || 4000;
 
+app.use("/storyframestudio",indexRoute);
+
+
 // Database connection first
 connectDatabse()
   .then(() => {
