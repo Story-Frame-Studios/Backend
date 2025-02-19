@@ -23,7 +23,9 @@
     "dotenv": "^16.3.1",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.6.3"
+    "mongoose": "^7.6.3",
+    "nodemailer": "^6.10.0",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
