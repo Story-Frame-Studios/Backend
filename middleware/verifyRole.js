@@ -9,6 +9,7 @@ const verifyRole = (requiredRole) => {
             return res.status(403).json({ success: false, message: "Forbidden: Insufficient permissions" });
         }
 
+        
         next();
     };
 };
