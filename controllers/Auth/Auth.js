@@ -244,5 +244,14 @@ const verifyEmployer = async (req, res) => {
     }
 };
 
+const logout = (req, res) => {
+  try {
+      res.clearCookie('token');
+      res.status(200).json({ success: true, message: "Logout successful" });
+  } catch (error) {
+      console.error('Error logging out user:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+}
 
-export { login, register, verifyEmployer };
+export { login, register, verifyEmployer, logout };
