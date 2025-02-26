@@ -1,5 +1,5 @@
 import express from 'express';
-import { login ,register, verifyEmployer, logout} from '../controllers/Auth/Auth.js';
+import { login ,register, verifyEmployer, logout,forgotPassword} from '../controllers/Auth/Auth.js';
 import verifyRole from '../middleware/verifyRole.js'; 
 import verifyUser from '../middleware/verifyUser.js'; 
 
@@ -8,6 +8,7 @@ const router = express.Router();
 // POST route for login
 router.post('/login', login);
 router.post('/register', register);
+router.post('/forgot-password',forgotPassword)
 router.get("/verify-employer", verifyEmployer);
 router.post('/logout', logout); 
 
