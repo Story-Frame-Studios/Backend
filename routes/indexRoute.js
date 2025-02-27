@@ -1,11 +1,13 @@
 import express from "express";
 import authenticationRoute from "./authenticationRoute.js";
 import userRoutes from "./userRoute.js";
+import jobRoutes from "./jobRoutes.js"
 
 const router = express.Router();
 
 // Mount authentication and user routes with the prefix '/auth' and '/users'
 router.use("/auth", authenticationRoute);
 router.use("/users", userRoutes);
+router.use("/jobPosting",jobRoutes)
 
 export default router;
