@@ -22,8 +22,6 @@ connectDatabse()
     console.log("Database connected successfully");
 
     // Use indexRoute under the '/story' prefix
-    app.use("/story", indexRoute);
-
     // Middleware
     // app.use(express.json());
     // app.use(cors());
