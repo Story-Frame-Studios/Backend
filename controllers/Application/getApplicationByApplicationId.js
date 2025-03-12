@@ -1,7 +1,7 @@
 import applicationCollection from '../../models/applicationCollection.js';
 
 const getApplicationByApplicationId = async (req, res) => {
-    const { applicationId } = req.body;  // Extract jobId from URL parameters
+    const { applicationId } = req.params;  // Extract jobId from URL parameters
 
     try {
         // Find all applications for the given jobId

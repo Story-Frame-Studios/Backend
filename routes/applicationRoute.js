@@ -9,10 +9,10 @@ import getApplicationByApplicationId from '../controllers/Application/getApplica
 import getApplicationStatus from '../controllers/Application/getApplicationStatus.js';
 
 router.post('/addApplication', addApplication);
-router.get('/getApplicationsByJobId', getApplicationsByJobId);
-router.get('/getApplicationsByCandidateId', getApplicationsByCandidateId);
-router.get('/getApplicationByApplicationId', getApplicationByApplicationId);
-router.get('/getApplicationStatus', getApplicationStatus);
+router.post('/getApplicationsByJobId', getApplicationsByJobId);
+router.post('/getApplicationsByCandidateId', getApplicationsByCandidateId);
+router.get('/getApplicationByApplicationId/:applicationId', getApplicationByApplicationId);
+router.post('/getApplicationStatus', getApplicationStatus);
 
 
 
