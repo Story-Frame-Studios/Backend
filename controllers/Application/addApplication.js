@@ -14,7 +14,7 @@ const addApplication = async (req, res) => {
 
     // Extract data from request
     const { jobId, candidateId, status, notes } = req.body;
-    const resumeUrl = req.files['resume'] ? req.files['resume'][0].path : null; // Cloudinary URL
+    const resumeUrl = req.files['resume'] ? req.files['resume'][0].path : null; // Cloudinary URL   
     const coverLetterText = req.body.coverLetter; // Cover letter as text if sent in body
     let coverLetterUrl = null; // Cloudinary URL for cover letter (if it's a file)
 
