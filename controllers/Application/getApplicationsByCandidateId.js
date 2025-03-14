@@ -12,8 +12,8 @@ const getApplicationsByCandidateId = async (req, res) => {
         console.log(applications, "applications");
 
         if (applications.length === 0) {
-            return res.status(404).json({
-                success: false,
+            return res.status(200).json({
+                success: true,
                 message: 'No applications found for this candidate.',
             });
         }
