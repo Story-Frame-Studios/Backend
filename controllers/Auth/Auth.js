@@ -198,7 +198,7 @@ const login = async (req, res) => {
 };
 const verifyEmployer = async (req, res) => {
   try {
-    const { email, action } = req.body;
+    const { email, action } = req.query;
     
     if (!email || !action) {
       return res.status(400).json({ error: "Invalid request" });
