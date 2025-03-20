@@ -1,5 +1,5 @@
 import express from 'express';
-import { login ,register, verifyEmployer, logout,forgotPassword} from '../controllers/Auth/Auth.js';
+import { login ,register, verifyEmployer, logout,forgotPassword, getPendingEmployers} from '../controllers/Auth/Auth.js';
 import verifyRole from '../middleware/verifyRole.js'; 
 import verifyUser from '../middleware/verifyUser.js'; 
 
@@ -11,6 +11,7 @@ router.post('/register', register);
 router.post('/forgot-password',forgotPassword)
 router.get("/verify-employer", verifyEmployer);
 router.post('/logout', logout); 
+router.get('/pending-employers', getPendingEmployers)
 
 // Candidate-only route
 router.post("/candidate-dashboard", verifyUser, verifyRole("candidate"), (req, res) => {

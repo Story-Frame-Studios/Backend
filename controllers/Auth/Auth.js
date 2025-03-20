@@ -199,7 +199,7 @@ const login = async (req, res) => {
 const verifyEmployer = async (req, res) => {
   try {
     const { email, action } = req.query;
-
+    
     if (!email || !action) {
       return res.status(400).json({ error: "Invalid request" });
     }
@@ -212,7 +212,6 @@ const verifyEmployer = async (req, res) => {
     }
 
     if (action === "approve") {
-      // Change role to "employer" if approved
       user.role = "employer";
       await user.save();
 
@@ -227,6 +226,10 @@ const verifyEmployer = async (req, res) => {
     }
 
     if (action === "reject") {
+      // Delete the user account if rejected
+      user.role = "rejected";
+      await user.save();
+      
       // Send rejection email to employer
       sendEmail(
         email,
@@ -304,4 +307,37 @@ const logout = (req, res) => {
   }
 }
 
-export { login, register, verifyEmployer,forgotPassword,logout };
+const getPendingEmployers = async (req, res) => {
+  try {
+    const pendingEmployers = await users.find({ role: "under review" });
+    res.status(200).json({ 
+      success: true, 
+      employers: pendingEmployers.map(user => ({
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userId: user.userId,
+        role: user.role
+      }))
+    });
+  } catch (error) {
+    console.error("Error fetching pending employers:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Add middleware to check if user is admin
+const isAdmin = async (req, res, next) => {
+  try {
+    const user = await users.findById(req.user.userId);
+    if (user.role !== "admin") {
+      return res.status(403).json({ error: "Access denied. Admin only." });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export { login, register, verifyEmployer, forgotPassword, logout, getPendingEmployers, isAdmin };
