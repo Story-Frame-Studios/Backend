@@ -227,7 +227,8 @@ const verifyEmployer = async (req, res) => {
 
     if (action === "reject") {
       // Delete the user account if rejected
-      await users.findByIdAndDelete(user._id);
+      user.role = "rejected";
+      await user.save();
       
       // Send rejection email to employer
       sendEmail(
@@ -316,7 +317,8 @@ const getPendingEmployers = async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        userId: user.userId
+        userId: user.userId,
+        role: user.role
       }))
     });
   } catch (error) {
