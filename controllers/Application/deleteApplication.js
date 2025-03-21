@@ -1,17 +1,24 @@
 import applicationCollection from '../../models/applicationCollection.js';
-import deletedApplications from '../../models/deletedApplications.js'; 
+import deletedApplications from '../../models/deletedApplications.js';
+import { invalidateApplicationCache } from '../../utils/cacheUtils.js';
 
 // Soft delete application by moving it to deletedApplications
 const deleteApplication = async (req, res) => {
     try {
         const { applicationId } = req.params;
         
-        // Find the application to delete
+        // First get the application to know which caches to invalidate
         const application = await applicationCollection.findOne({ applicationId });
-
+        
         if (!application) {
-            return res.status(404).json({ message: 'Application not found' });
+            return res.status(404).json({
+                success: false,
+                message: 'Application not found.',
+            });
         }
+        
+        // Delete the application
+        await applicationCollection.deleteOne({ applicationId });
 
         // Move application to deletedApplications collection
         await deletedApplications.create({
@@ -30,9 +37,23 @@ const deleteApplication = async (req, res) => {
         // Delete from applicationCollection
         await applicationCollection.deleteOne({ applicationId });
 
-        res.status(200).json({ message: 'Application moved to deleted applications successfully' });
+        // Invalidate related caches
+        await invalidateApplicationCache({
+            applicationId,
+            candidateId: application.candidateId,
+            jobId: application.jobId
+        });
+
+        res.status(200).json({
+            success: true,
+            message: 'Application moved to deleted applications successfully!',
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete application.',
+            error: error.message,
+        });
     }
 };
 
