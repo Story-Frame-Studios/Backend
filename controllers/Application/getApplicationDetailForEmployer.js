@@ -1,8 +1,8 @@
 import applicationCollection from '../../models/applicationCollection.js';
-import jobPostings from '../../models/jobPostings.js'; // Assuming you have a job collection model
+import jobPostings from '../../models/jobPostings.js';
 
-const getApplicationByApplicationId = async (req, res) => {
-    const { applicationId } = req.params;  // Extract applicationId from URL parameters
+const getApplicationDetailForEmployer = async (req, res) => {
+    const { employerId, applicationId } = req.params; // Extract parameters from URL
 
     try {
         // Find the application by applicationId
@@ -15,16 +15,16 @@ const getApplicationByApplicationId = async (req, res) => {
             });
         }
 
-        // Fetch job details using jobId from the application
+        // Find the job posting and ensure it belongs to the employer
         const job = await jobPostings.findOne(
-            { jobId: application.jobId },
-            'title companyName salary location jobType'  // Only select the fields you need
-          );
+            { jobId: application.jobId, employerId },
+            'title companyName salary location jobType' // Select only required fields
+        );
 
         if (!job) {
-            return res.status(404).json({
+            return res.status(403).json({
                 success: false,
-                message: 'Job details not found.',
+                message: 'No job found for this employer or unauthorized access.',
             });
         }
 
@@ -32,7 +32,7 @@ const getApplicationByApplicationId = async (req, res) => {
             success: true,
             message: 'Application and Job details retrieved successfully!',
             application,
-            job,  // Include job details in the response
+            job,
         });
     } catch (error) {
         res.status(500).json({
@@ -43,4 +43,4 @@ const getApplicationByApplicationId = async (req, res) => {
     }
 };
 
-export default getApplicationByApplicationId;
+export default getApplicationDetailForEmployer;

@@ -2,7 +2,7 @@ import applicationCollection from '../../models/applicationCollection.js';
 import mongoose from 'mongoose';
 import jobPostings from '../../models/jobPostings.js';
 const getApplicationsByCandidateId = async (req, res) => {
-    const { candidateId } = req.body;  // Extract candidateId from request body
+    const { candidateId } = req.params;  // Extract candidateId from request body
 
     try {
         console.log(candidateId, "candidateId");

@@ -1,9 +1,9 @@
 import jobPostings from "../../models/jobPostings.js";
 
-const getJob = async (req, res) => {
+const getJobDetails = async (req, res) => {
     try {
-        const jobId = req.params.id;
-        console.log(typeof(jobId), "idddd");
+        const jobId = req.params.jobId;
+        console.log(jobId, "idddd");
 
         // Attempt to find job by ID
         const job = await jobPostings.findOne({ jobId: jobId});
@@ -22,4 +22,4 @@ const getJob = async (req, res) => {
 };
 
 
-export {getJob};
+export default getJobDetails;
