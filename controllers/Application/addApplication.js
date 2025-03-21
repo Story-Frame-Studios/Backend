@@ -4,6 +4,7 @@ import upload from '../../config/multerConfig.js';
 import cloudinary from '../../config/cloudinaryConfig.js'; // Assuming you have cloudinaryConfig for setup
 
 const addApplication = async (req, res) => {
+  
   upload.fields([
     { name: 'resume', maxCount: 1 },
     { name: 'coverLetter', maxCount: 1 },

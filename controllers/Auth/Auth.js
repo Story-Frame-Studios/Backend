@@ -34,7 +34,7 @@ console.log(req.body, "body")
 </p>
 
 <div style="text-align: center; margin-top: 30px;">
-  <a href="http://localhost:4000/story" 
+  <a href="http://localhost:4000" 
      style="padding: 15px 30px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
     Explore Job Opportunities
   </a>
@@ -94,7 +94,7 @@ console.log(req.body, "body")
 </p>
 
 <div style="text-align: center; margin-top: 30px;">
-  <a href="http://localhost:4000/story" 
+  <a href="http://localhost:4000/storyframestudio" 
      style="padding: 15px 30px; background: #007BFF; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
     Visit Our Platform
   </a>
@@ -129,12 +129,12 @@ console.log(req.body, "body")
 </p>
 
 <div style="text-align: center; margin-top: 20px;">
-  <a href="http://localhost:4000/story/auth/verify-employer?email=${email}&action=approve" 
+  <a href="http://localhost:4000/storyframestudio/auth/verify-employer?email=${email}&action=approve" 
      style="padding: 15px 30px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 0 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
     Approve
   </a>
 
-  <a href="http://localhost:4000/story/auth/verify-employer?email=${email}&action=reject" 
+  <a href="http://localhost:4000/storyframestudio/auth/verify-employer?email=${email}&action=reject" 
      style="padding: 15px 30px; background: #f44336; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 0 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
     Reject
   </a>
@@ -180,7 +180,7 @@ const login = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user.userId, email: user.email },
       process.env.JWT_SECRET, // Use a strong secret key from .env
       { expiresIn: '1h' } // Token expires in 1 hour
     );
@@ -189,7 +189,7 @@ const login = async (req, res) => {
       success: true,
       message: 'Login successful',
       token, // Send token to client
-      user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role }
+      user: { id: user.userId, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role }
     });
   } catch (error) {
     console.error('Error logging in user:', error);

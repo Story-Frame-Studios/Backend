@@ -7,7 +7,7 @@ import { getRedisClient, isRedisCachingEnabled } from '../../index.js';
 const CACHE_TTL = 60 * 5; // 5 minutes
 
 const getApplicationsByCandidateId = async (req, res) => {
-    const { candidateId } = req.body;  // Extract candidateId from request body
+    const { candidateId } = req.params;  // Extract candidateId from request body
 
     try {
         console.log(candidateId, "candidateId");

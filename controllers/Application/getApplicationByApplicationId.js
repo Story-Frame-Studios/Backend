@@ -42,7 +42,20 @@ const getApplicationByApplicationId = async (req, res) => {
         if (!application) {
             return res.status(404).json({
                 success: false,
-                message: 'No applications found for this job.',
+                message: 'No application found for this applicationId.',
+            });
+        }
+
+        // Fetch job details using jobId from the application
+        const job = await jobPostings.findOne(
+            { jobId: application.jobId },
+            'title companyName salary location jobType'  // Only select the fields you need
+          );
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: 'Job details not found.',
             });
         }
         
@@ -65,13 +78,14 @@ const getApplicationByApplicationId = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Applications retrieved successfully!',
+            message: 'Application and Job details retrieved successfully!',
             application,
+            job,  // Include job details in the response
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Failed to fetch applications.',
+            message: 'Failed to fetch application and job details.',
             error: error.message,
         });
     }
