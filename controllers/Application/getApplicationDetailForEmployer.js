@@ -1,5 +1,6 @@
 import applicationCollection from '../../models/applicationCollection.js';
 import jobPostings from '../../models/jobPostings.js';
+import users from '../../models/users.js'; // Import users model
 
 const getApplicationDetailForEmployer = async (req, res) => {
     const { employerId, applicationId } = req.params; // Extract parameters from URL
@@ -28,11 +29,29 @@ const getApplicationDetailForEmployer = async (req, res) => {
             });
         }
 
+        // Find the candidate's user details using userId from the application
+        const candidateUser = await users.findOne({ userId: application.candidateId });
+
+        if (!candidateUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'Candidate not found in the users database.',
+            });
+        }
+
+        // Include candidate details in the response
+        const candidate = {
+            firstName: candidateUser.firstName,
+            lastName: candidateUser.lastName,
+            email: candidateUser.email,
+        };
+
         res.status(200).json({
             success: true,
             message: 'Application and Job details retrieved successfully!',
             application,
             job,
+            candidate,  // Send candidate details as part of the response
         });
     } catch (error) {
         res.status(500).json({

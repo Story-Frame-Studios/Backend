@@ -10,7 +10,6 @@ const getApplicationsByCandidateId = async (req, res) => {
     const { candidateId } = req.params;  // Extract candidateId from request body
 
     try {
-        console.log(candidateId, "candidateId");
         
         // Generate a cache key
         const cacheKey = `applications:candidate:${candidateId}`;
@@ -42,7 +41,6 @@ const getApplicationsByCandidateId = async (req, res) => {
 
         // Find all applications for the given candidateId
         const applications = await applicationCollection.find({ candidateId });
-        console.log(applications, "applications");
 
         if (applications.length === 0) {
             return res.status(200).json({

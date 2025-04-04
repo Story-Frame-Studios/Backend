@@ -1,28 +1,29 @@
 import applicationCollection from '../../models/applicationCollection.js';
 
 const getApplicationStatus = async (req, res) => {
-    const { applicationId } = req.body;  // Extract jobId from URL parameters
+    const { jobId, candidateId } = req.params; // Extract jobId and candidateId from URL parameters
 
     try {
-        // Find all applications for the given jobId
-        const application = await applicationCollection.findOne({ applicationId });
+        // Find application based on both jobId and candidateId
+        const application = await applicationCollection.findOne({ jobId, candidateId });
 
-        if (application.length === 0) {
-            return res.status(404).json({
+        if (!application) {
+            return res.status(200).json({
                 success: false,
-                message: 'No applications found for this job.',
+                message: 'No application found for this job and candidate.',
             });
         }
 
         res.status(200).json({
             success: true,
             message: 'Application status retrieved successfully!',
-            status: application.status, // Return only the status for tracking
+            status: application.status, // Return only the status for tracking,
+            applicationId:application.applicationId
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Failed to fetch applications.',
+            message: 'Failed to fetch application status.',
             error: error.message,
         });
     }

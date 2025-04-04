@@ -1,10 +1,12 @@
 import applicationCollection from '../../models/applicationCollection.js';
 import { v4 as uuidv4 } from 'uuid';
 import upload from '../../config/multerConfig.js';
-import cloudinary from '../../config/cloudinaryConfig.js'; // Assuming you have cloudinaryConfig for setup
+import cloudinary from '../../config/cloudinaryConfig.js';
+import users from '../../models/users.js'; // Import the users model
+import jobPostings from '../../models/jobPostings.js'; // Import the jobPostings model to fetch job details
+import { sendEmail } from '../../service/emailService.js'; // Import the email service
 
 const addApplication = async (req, res) => {
-  
   upload.fields([
     { name: 'resume', maxCount: 1 },
     { name: 'coverLetter', maxCount: 1 },
@@ -21,7 +23,6 @@ const addApplication = async (req, res) => {
 
     // Handle the cover letter based on whether it's a file or text
     if (req.files['coverLetter']) {
-      // If the cover letter is a file, upload to Cloudinary
       try {
         const coverLetterFile = req.files['coverLetter'][0];
         const coverLetterUpload = await cloudinary.uploader.upload(coverLetterFile.path, {
@@ -52,6 +53,24 @@ const addApplication = async (req, res) => {
         });
       }
 
+      // Fetch candidate details
+      const candidate = await users.findOne({ userId: candidateId });
+      if (!candidate) {
+        return res.status(404).json({ success: false, message: 'Candidate not found.' });
+      }
+
+      // Fetch job details to get the employerId
+      const job = await jobPostings.findOne({ jobId });
+      if (!job) {
+        return res.status(404).json({ success: false, message: 'Job not found.' });
+      }
+
+      // Fetch employer details using the employerId from the job posting
+      const employer = await users.findOne({ userId: job.employerId });
+      if (!employer) {
+        return res.status(404).json({ success: false, message: 'Employer not found.' });
+      }
+
       // Create and save application in MongoDB
       const newApplication = new applicationCollection({
         applicationId: uuidv4(),
@@ -64,6 +83,50 @@ const addApplication = async (req, res) => {
       });
 
       const savedApplication = await newApplication.save();
+
+      // Send email to candidate
+      sendEmail(
+        candidate.email,
+        "Application Submitted Successfully - Story Frame Studio",
+        `<p style="font-family: Arial, sans-serif; color: #333; font-size: 16px;">
+  Dear ${candidate.firstName},
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #555; font-size: 16px;">
+  Your application for the job has been successfully submitted. We will review your application and get back to you soon.
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #777; font-size: 14px; text-align: center; margin-top: 30px;">
+  If you have any questions or need assistance, feel free to reach out to our support team at <a href="mailto:storyframestudio01@gmail.com" style="color: #28a745;">storyframestudio01@gmail.com</a>.
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #777; font-size: 12px; text-align: center; margin-top: 20px;">
+  Best regards, <br>
+  Story Frame Studio Team
+</p>`
+      );
+
+      // Send email to employer
+      sendEmail(
+        employer.email,
+        "New Job Application Received - Story Frame Studio",
+        `<p style="font-family: Arial, sans-serif; color: #333; font-size: 16px;">
+  Dear ${employer.firstName},
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #555; font-size: 16px;">
+  A new job application has been received from ${candidate.firstName} ${candidate.lastName}. Please review the application at your earliest convenience.
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #777; font-size: 14px; text-align: center; margin-top: 30px;">
+  If you have any questions or need assistance, feel free to reach out to our support team at <a href="mailto:storyframestudio01@gmail.com" style="color: #28a745;">storyframestudio01@gmail.com</a>.
+</p>
+
+<p style="font-family: Arial, sans-serif; color: #777; font-size: 12px; text-align: center; margin-top: 20px;">
+  Best regards, <br>
+  Story Frame Studio Team
+</p>`
+      );
 
       res.status(201).json({
         success: true,
