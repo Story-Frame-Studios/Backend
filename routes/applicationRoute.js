@@ -16,14 +16,14 @@ import getApplicantsForEmployer from '../controllers/Application/getApplicantsFo
 import getAppliedApplicationsByCandidate from '../controllers/Application/getAppliedApplicationsByCandidate.js';
 import getDeletedApplications from '../controllers/Application/getDeletedApplications.js'
 import getDeletedApplicationsForEmployer from '../controllers/Application/getDeletedApplicationsForEmployer.js';
-import getApplicationDetailForEmployer from '../controllers/Application/getApplicationDetailForEmployer.js'
-import changeApplicationStatus from '../controllers/Application/changeApplicationStatus.js'
+import getApplicationDetailForEmployer from '../controllers/Application/getApplicationDetailForEmployer.js';
+import changeApplicationStatus from '../controllers/Application/changeApplicationStatus.js';
 
 router.post('/addApplication', addApplication);
 router.post('/getApplicationsByJobId', getApplicationsByJobId);
 router.get('/getApplicationsByCandidateId/:candidateId', getApplicationsByCandidateId);
 router.get('/getApplicationByApplicationId/:applicationId', getApplicationByApplicationId);
-router.post('/getApplicationStatus', getApplicationStatus);
+router.get('/getApplicationStatus/:jobId/:candidateId', getApplicationStatus);
 router.delete('/deleteApplication/:applicationId', deleteApplication); 
 router.put('/updateApplicationStatus', verifyUser, verifyRole('employer'),updateApplicationStatus);
 router.get('/getApplicationsByEmployerId/:employerId', getApplicationsByEmployerId);
@@ -34,6 +34,4 @@ router.get('/getDeletedApplicationsForEmployer/:employerId', getDeletedApplicati
 router.get('/getApplicationDetailForEmployer/:employerId/:applicationId', getApplicationDetailForEmployer);
 router.post('/changeApplicationStatus/:employerId/:applicationId', changeApplicationStatus);
 
-
-getDeletedApplicationsForEmployer
 export default router;

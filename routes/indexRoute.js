@@ -3,7 +3,6 @@ import authenticationRoute from "./authenticationRoute.js";
 import userRoutes from "./userRoute.js";
 import jobRoutes from "./jobRoutes.js";
 import applicationRoute from "./applicationRoute.js";
-
 const router = express.Router();
 
 // Mount authentication and user routes with the prefix '/auth' and '/users'

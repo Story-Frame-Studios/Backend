@@ -1,6 +1,6 @@
 import applicationCollection from '../../models/applicationCollection.js';
 import { getRedisClient, isRedisCachingEnabled } from '../../index.js';
-
+import jobPostings from '../../models/jobPostings.js';
 // Cache TTL in seconds
 const CACHE_TTL = 60 * 5; // 5 minutes
 
@@ -83,6 +83,8 @@ const getApplicationByApplicationId = async (req, res) => {
             job,  // Include job details in the response
         });
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json({
             success: false,
             message: 'Failed to fetch application and job details.',
